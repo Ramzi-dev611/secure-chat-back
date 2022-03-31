@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_restful import Api
-from flask_sock import Sock
-
+from flask_jwt_extended import jwt_required
 from services.message_service import MessagesService
+import json
 
 from resources.login import LoginResource
 from resources.messages import MessagesResource
@@ -17,9 +17,6 @@ def create_app():
     app.config.from_object(Config)
     register_extensions(app)
     register_resources(app)
-    register_sockets(app)
-    return app
-
 
 def register_extensions(app):
     jwt.init_app(app)
@@ -31,17 +28,9 @@ def register_resources(app):
     api.add_resource(RegisterResource, '/register')
     api.add_resource(UserListResource, '/user')
 
-def register_sockets(app):
-    sock = Sock(app)
-    @sock.route('/messages')
-    def echo(ws):
-        while True:
-            text = ws.receive()
-            service = MessagesService.get_instance()
-            service.save_message(text)
-            ws.send(text)
-
+def main():
+    sock, app = create_app()
+    sock.run(app)
 
 if __name__ == '__main__':
-    app = create_app()
-    app.run(port=5000)
+    main()

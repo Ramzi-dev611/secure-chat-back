@@ -1,5 +1,5 @@
 import requests
-
+import json
 class MessagesService:
     instance = None
 
@@ -9,5 +9,11 @@ class MessagesService:
             cls.instance = MessagesService()
         return cls.instance
 
-    def save_message(self, data):
-        return requests.post('http://localhost:5002/message')
+    @classmethod
+    def get_messages(cls):
+        data = requests.get('http://localhost:5001/message/')
+        return json.loads((data.text)), data.status_code 
+
+    def save_message(self, content):
+        data = requests.post('http://localhost:5001/message', json=content)
+        return json.loads((data.text)), data.status_code 
