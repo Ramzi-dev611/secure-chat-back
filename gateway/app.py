@@ -17,6 +17,7 @@ def create_app():
     app.config.from_object(Config)
     register_extensions(app)
     register_resources(app)
+    return app 
 
 def register_extensions(app):
     jwt.init_app(app)
@@ -29,8 +30,8 @@ def register_resources(app):
     api.add_resource(UserListResource, '/user')
 
 def main():
-    sock, app = create_app()
-    sock.run(app)
+    app = create_app()
+    app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     main()
