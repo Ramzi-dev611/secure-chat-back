@@ -4,8 +4,10 @@ from flask_jwt_extended import create_access_token
 from http import HTTPStatus
 from utils import check_password
 from models.user import User
+from flask_kerberos import requires_authentication
 
 class LoginResource(Resource):
+    @requires_authentication
     def post(self):
         data = request.get_json()
         email = data.get('email')
